@@ -7,7 +7,7 @@ const actuatorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        mcuIds: [       // Multiple MCUs can have access of this
+        mcus: [       // Multiple MCUs can have access of this
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Mcu'

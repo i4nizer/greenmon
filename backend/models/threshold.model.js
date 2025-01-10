@@ -12,8 +12,8 @@ const thresholdSchema = new mongoose.Schema(
             required: true
         },
         value: {
-            type: Number,       // 30   // url, path
-            required: true
+            type: Number,       // number   // url, path
+            required: null
         },
         condition: {            // <, =, >
             type: String,
@@ -24,12 +24,12 @@ const thresholdSchema = new mongoose.Schema(
             type: Boolean,
             default: true
         },
-        sensorId: {
+        sensor: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Sensor',
             required: true
         },
-        actuatorId: {
+        actuator: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Actuator'
         },

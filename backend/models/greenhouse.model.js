@@ -7,7 +7,11 @@ const greenhouseSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        userId: {
+        location: {
+            type: String,
+            default: null
+        },
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },

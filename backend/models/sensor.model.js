@@ -12,12 +12,10 @@ const sensorSchema = new mongoose.Schema(
             enum: ['Number', 'Image'],
             default: 'Number'
         },
-        mcuIds: [       // Multiple MCUs can have access of this
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Mcu'
-            }
-        ],
+        mcu: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Mcu'
+        },
         deleted: {
             type: Boolean,
             default: false

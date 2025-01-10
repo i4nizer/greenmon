@@ -12,14 +12,14 @@
             <div class="d-none d-sm-flex">
                 <v-btn to="/" class="text-none" variant="plain">Greenhouses</v-btn>
                 <v-btn to="/settings" class="text-none" variant="plain">Settings</v-btn>
-                <v-btn to="/sign-in" class="text-none" variant="plain">Logout</v-btn>
+                <v-btn to="" class="text-none" @click.prevent="postSignOut" variant="plain">Logout</v-btn>
             </div>
 
             <!-- Icon buttons (visible on sm and smaller) -->
             <div class="d-flex d-sm-none">
                 <v-btn to="/" variant="plain" title="Greenhouses" icon><v-icon>mdi-home</v-icon></v-btn>
                 <v-btn to="/settings" variant="plain" title="Settings" icon><v-icon>mdi-cog</v-icon></v-btn>
-                <v-btn to="/sign-in" variant="plain" title="Logout" icon><v-icon>mdi-logout</v-icon></v-btn>
+                <v-btn to="" variant="plain" title="Logout" @click.prevent="postSignOut" icon><v-icon>mdi-logout</v-icon></v-btn>
             </div>
         </div>
     </div>
@@ -27,6 +27,39 @@
 
 
 <script setup>
+import router from '@/router';
+import { useTokenStore } from '@/store/token';
+import snackbar from '@/utils/snackbar';
+import axios from 'axios';
+
+
+
+// stores
+const tokenStore = useTokenStore()
+
+
+// for signing out
+const postSignOut = async () => {
+    const data = { refreshToken: tokenStore.refresh }
+
+    // post sign out
+    await axios.post('http://localhost:4000/user/sign-out', data)
+        .then((res) => {
+            // clear tokens
+            tokenStore.access = ''
+            tokenStore.refresh = ''
+            snackbar.message.value = 'User signed out successfully.'
+            router.push('/sign-in')
+        })
+        .catch((err) => {
+            // display error
+            if (!err.response) snackbar.message.value = 'Failed to sign out, backend server offline.'
+            else snackbar.message.value = err.response.data.text
+        })
+        .finally(() => snackbar.show.value = true)
+}
+
+
 
 </script>
 

@@ -1,24 +1,24 @@
 const mongoose = require('mongoose');
 
 
-const imageSchema = new mongoose.Schema(
+const detectionSchema = new mongoose.Schema(
     {
-        url: {  
-            type: String,   // url path from the server
-            required: true
-        },
-        deficiency: {
+        class: {
             type: String,
-            enum: ['Nitrogen', 'Phosphorus', 'Potassium', 'Healthy'],
-            default: 'Healthy'
+            required: true
         },
         confidence: {       // AI confidence score
             type: Number,
             default: 0
         },
-        sensorId: {
+        data: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Sensor',
+            ref: 'Data',
+            required: true
+        },
+        model: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Model',
             required: true
         },
         deleted: {
@@ -32,4 +32,4 @@ const imageSchema = new mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('Image', imageSchema);
+module.exports = mongoose.model('Detection', detectionSchema);

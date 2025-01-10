@@ -43,7 +43,7 @@ const routes = [
         component: () => import('@/views/SignIn.vue'),
     },
     {
-        path: '/email-confirmation',
+        path: '/email-confirmation/:token?',
         name: 'Email Confirmation',
         component: () => import('@/views/EmailConfirmation.vue'),
     },
@@ -53,7 +53,12 @@ const routes = [
         component: () => import('@/views/ForgotPassword.vue'),
     },
     {
-        path: '/reset-password',
+        path: '/password-confirmation',
+        name: 'Password Confirmation',
+        component: () => import('@/views/PasswordConfirmation.vue'),
+    },
+    {
+        path: '/reset-password/:token?',
         name: 'Reset Password',
         component: () => import('@/views/ResetPassword.vue'),
     },

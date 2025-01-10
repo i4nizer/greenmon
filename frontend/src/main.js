@@ -16,8 +16,11 @@ import router from './router'
 // Composables
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persistedstate'
 
 const pinia = createPinia()
+pinia.use(piniaPersist)
+
 const app = createApp(App)
 
 registerPlugins(app)

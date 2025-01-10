@@ -25,9 +25,17 @@ const userSchema = new mongoose.Schema(
             enum: ['User', 'Admin'],
             default: 'User'
         },
-        token: {
+        refreshToken: {
             type: String,
-            default: ''
+            default: null
+        },
+        emailToken: {
+            type: String,
+            default: null
+        },
+        passwordToken: {
+            type: String,
+            default: null
         },
         deleted: {
             type: Boolean,

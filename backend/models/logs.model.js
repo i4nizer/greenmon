@@ -13,7 +13,7 @@ const logsSchema = new mongoose.Schema(
             required: true
         },
         source: {
-            type: String,
+            type: String,       // Sensor, System
             required: true
         },
         viewed: {

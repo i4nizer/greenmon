@@ -7,7 +7,7 @@ const mcuSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        greenhouseId: {
+        greenhouse: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Greenhouse'
         },
