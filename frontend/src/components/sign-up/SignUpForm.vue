@@ -55,9 +55,9 @@
 <script setup>
 import router from '@/router';
 import { useUserStore } from '@/store/user';
-import api from '@/utils/api';
 import rules from '@/utils/rules';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { ref } from 'vue';
 
 
@@ -85,7 +85,7 @@ const postSignUp = async () => {
     }
 
     // send to backend
-    await api.post('/user/sign-up', data)
+    await axios.post('http://localhost:4000/user/sign-up', data)
         .then(res => {
             snackbar.message.value = res.data.text
             userStore.email = email.value

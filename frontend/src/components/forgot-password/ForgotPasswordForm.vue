@@ -35,9 +35,9 @@
 <script setup>
 import router from '@/router';
 import { useUserStore } from '@/store/user';
-import api from '@/utils/api';
 import rules from '@/utils/rules';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { ref } from 'vue';
 
 
@@ -53,7 +53,7 @@ const userStore = useUserStore()
 const postForgotPassword = async () => { 
     loading.value = true
 
-    await api.post('/user/forgot-password', { email: email.value })
+    await axios.post('http://localhost:4000/user/forgot-password', { email: email.value })
         .then(res => {
             // store email
             userStore.passwordResetEmail = email.value

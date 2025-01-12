@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+const { checkAccessToken } = require('../middlewares/token.middleware')
 
 const {
     postToken, postSignUp,
@@ -12,6 +13,8 @@ const {
     postResendEmailConfirmation
 } = require('../controllers/user.controller')
 
+const greenhouseRoutes = require('./greenhouse.route')
+
 
 router.post('/token', postToken)
 router.post('/sign-up', postSignUp)
@@ -22,6 +25,9 @@ router.post('/forgot-password', postForgotPassword)
 router.post('/email-confirmation', postEmailConfirmation)
 router.post('/resend-forgot-password', postResendForgotPassword)
 router.post('/resend-email-confirmation', postResendEmailConfirmation)
+
+router.use('/greenhouse', checkAccessToken, greenhouseRoutes)
+
 
 
 module.exports = router

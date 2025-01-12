@@ -1,3 +1,4 @@
+import router from "../router/index";
 import { useTokenStore } from "@/store/token";
 import axios from "axios";
 
@@ -15,22 +16,35 @@ api.interceptors.request.use(
     async (config) => {
         
         const tokenStore = useTokenStore()
-        
-        // check if needs rotation
-        if (!tokenStore.access && tokenStore.refresh) {
-            const rotated = await tokenStore.rotate()
+
+        // needs to sign in again
+        if (tokenStore.refreshExpired) {
+            // cancel the request
+            const controller = new AbortController()
+            config.signal = controller.signal
+            controller.abort()
             
-            // rotation fail, could be expired refresh token
-            if (!rotated) {
-                // cancel the request
-                const controller = new AbortController()
-                config.signal = controller.signal
-                controller.abort()
-                
-                return Promise.reject(new axios.AxiosError('Security: Token expired, kindly login again.', 'ECONNABORTED'))
-            }
+            router.push('/sign-in')
+            return Promise.reject(new axios.AxiosError('Security: Token expired, kindly login again.', 'ECONNABORTED'))
         }
-        
+
+        // no access but have refresh
+        if (tokenStore.accessExpired) {
+            await tokenStore.rotate()
+                .catch(err => {
+                    // no response
+                    if (!err.response) return Promise.reject(new axios.AxiosError('Security: Backend server offline, kindly login again.', 'ECONNABORTED'))
+
+                    // cancel the request
+                    const controller = new AbortController()
+                    config.signal = controller.signal
+                    controller.abort()
+                    
+                    router.push('/sign-in')
+                    return Promise.reject(new axios.AxiosError('Security: Token expired, kindly login again.', 'ECONNABORTED'))
+                })
+        }
+
         // add access token in headers
         if (tokenStore.access) config.headers['Authorization'] = `Bearer ${tokenStore.access}`
 
@@ -44,9 +58,7 @@ api.interceptors.response.use(
     
     // log errors
     async (error) => {
-
-        
-
+        console.error(error)
         return Promise.reject(error)
     }
 )

@@ -21,8 +21,8 @@
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import api from '@/utils/api';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 
 const userStore = useUserStore()
@@ -47,7 +47,7 @@ const postResetEmail = async () => {
     loading.value = true
 
     const data = { email: userStore.passwordResetEmail }
-    await api.post('/user/resend-forgot-password', data)
+    await axios.post('http://localhost:4000/user/resend-forgot-password', data)
         .then(res => {
             // store email
             userStore.passwordLastForgot = Date.now()

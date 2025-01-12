@@ -5,22 +5,22 @@
             <v-btn
                 text="Dashboard"
                 class="text-none border"
-                to="/greenhouses/dashboard"
+                :to="`/greenhouses/${id}/dashboard`"
             ></v-btn>
             <v-btn
                 text="Devices"
                 class="text-none border"
-                to="/greenhouses/devices"
+                :to="`/greenhouses/${id}/devices`"
             ></v-btn>
             <v-btn
                 text="Logs"
                 class="text-none border"
-                to="/greenhouses/logs"
+                :to="`/greenhouses/${id}/logs`"
             ></v-btn>
             <v-btn
                 text="Settings"
                 class="text-none border"
-                to="/greenhouses/settings"
+                :to="`/greenhouses/${id}/settings`"
             ></v-btn>
         </v-card-actions>
     </v-card>
@@ -29,7 +29,7 @@
 <script setup>
 
 
-const props = defineProps(['name'])
+const props = defineProps(['id', 'name'])
 </script>
 
 <style scoped>

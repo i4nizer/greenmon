@@ -23,8 +23,8 @@
 <script setup>
 import router from '@/router';
 import { useUserStore } from '@/store/user';
-import api from '@/utils/api';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -53,7 +53,7 @@ const countdown = () => {
 const postResendEmail = async () => {
     loading.value = true
 
-    await api.post('/user/resend-email-confirmation', { email: userStore.email })
+    await axios.post('http://localhost:4000/user/resend-email-confirmation', { email: userStore.email })
         .then(res => {
             // store resend
             userStore.emailLastResend = Date.now()
@@ -75,7 +75,7 @@ const postResendEmail = async () => {
 const postEmailToken = async () => {
     loading.value = true
 
-    await api.post('/user/email-confirmation', { emailToken: token })
+    await axios.post('/user/email-confirmation', { emailToken: token })
         .then(res => snackbar.message.value = 'Email confirmed successfully, you can sign in now.')
         .then(() => router.push('/sign-in'))
         .catch(err => snackbar.message.value = err.toString())

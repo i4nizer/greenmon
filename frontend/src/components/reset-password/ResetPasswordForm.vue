@@ -30,9 +30,9 @@
 <script setup>
 import router from '@/router';
 import { useUserStore } from '@/store/user';
-import api from '@/utils/api';
 import rules from '@/utils/rules';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -57,7 +57,7 @@ const postResetPassword = async () => {
     loading.value = true
 
     const data = { passwordToken: token, password: newPassword.value }
-    await api.post('/user/reset-password', data)
+    await axios.post('http://localhost:4000/user/reset-password', data)
         .then(res => {
             // save reset
             userStore.passwordLastReset = Date.now()

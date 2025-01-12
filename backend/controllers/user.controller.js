@@ -20,7 +20,7 @@ const postToken = async (req, res) => {
     if (!userDoc.verified) return res.status(401).send({ text: 'User email is not yet verified.' })
     
     // create new tokens
-    const AToken = jwt.sign({ email }, config.refreshKey, { expiresIn: 60 * 1 })  // expires in 15mins
+    const AToken = jwt.sign({ email }, config.accessKey, { expiresIn: 60 * 15 })  // expires in 15mins
     const RToken = jwt.sign({ email }, config.refreshKey, { expiresIn: '7d' })
     
     // save user token
@@ -106,8 +106,8 @@ const postSignIn = async (req, res) => {
     if (userDoc.password != hashedPassword) return res.status(403).send({ text: 'Incorrect password.' })
 
     // sign in user
-    const accessToken = jwt.sign({ email }, config.refreshKey, { expiresIn: 60 * 15 })  // expires in 15mins
-    const refreshToken = jwt.sign({ email }, config.refreshKey, { expiresIn: '7d' })
+    const accessToken = jwt.sign({ id: userDoc._id, email }, config.accessKey, { expiresIn: 60 * 15 })  // expires in 15mins
+    const refreshToken = jwt.sign({ id: userDoc._id, email }, config.refreshKey, { expiresIn: '7d' })
     userDoc.refreshToken = refreshToken
     await userDoc.save()
     

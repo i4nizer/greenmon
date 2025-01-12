@@ -13,22 +13,22 @@ const routes = [
         component: () => import('@/views/Greenhouses.vue'),
     },
     {
-        path: '/greenhouses/dashboard',
+        path: '/greenhouses/:id/dashboard',
         name: 'Greenhouse Dashboard',
         component: () => import('@/views/greenhouse/Dashboard.vue'),
     },
     {
-        path: '/greenhouses/devices',
+        path: '/greenhouses/:id/devices',
         name: 'Greenhouse Devices',
         component: () => import('@/views/greenhouse/Devices.vue'),
     },
     {
-        path: '/greenhouses/logs',
+        path: '/greenhouses/:id/logs',
         name: 'Greenhouse logs',
         component: () => import('@/views/greenhouse/Logs.vue'),
     },
     {
-        path: '/greenhouses/settings',
+        path: '/greenhouses/:id/settings',
         name: 'Greenhouse Settings',
         component: () => import('@/views/greenhouse/Settings.vue'),
     },

@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode"
 import snackbar from "@/utils/snackbar";
 import axios from "axios";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 
 export const useTokenStore = defineStore('token', () => {
@@ -15,40 +15,22 @@ export const useTokenStore = defineStore('token', () => {
 
 
     // ---getters
-
+    const accessExpired = computed(() => access.value == '' || Date.now() > (jwtDecode(access.value).exp * 1000))
+    const refreshExpired = computed(() => refresh.value == '' || Date.now() > (jwtDecode(refresh.value).exp * 1000))
 
 
     // ---actions
-    /** @returns true if rotated else false */
     const rotate = async () => {
-        let success = false
-        if (!refresh.value) return false
-        
         // send refresh token to get new tokens
-        await axios.post('http://localhost:4000/user/token', { refreshToken: refresh.value })
-            .then((res) => {
-                // save new tokens
-                access.value = res.data.object.accessToken
-                refresh.value = res.data.object.refreshToken
-                
-                // display
-                success = true
-                snackbar.message.value = 'Security: Token rotated successfully.'
-            })
-            .catch((err) => {
-                // specify errors
-                if (!err.response) snackbar.message.value = 'Security: Backend server offline, kindly login again.'
-                else if (err.response.status == 400) snackbar.message.value = 'Security: Token invalid or expired, kindly login again.'
-                else if (err.response.status == 401) snackbar.message.value = 'Security: Cannot perform token rotation, user email unverified.'
-                else if (err.response.status == 404) snackbar.message.value = 'Security: Token unrecognized, kindly login again.'
-                else snackbar.message.value = err.response.data.text
-
-                // set
-                success = false
-            })
-            .finally(() => snackbar.show.value = true)
+        const res = await axios.post('http://localhost:4000/user/token', { refreshToken: refresh.value })
         
-        return success
+        // save new tokens
+        if (res.status < 300 && res.data) {
+            access.value = res.data.object.accessToken
+            refresh.value = res.data.object.refreshToken
+        }
+        
+        return res
     }
 
     
@@ -61,6 +43,8 @@ export const useTokenStore = defineStore('token', () => {
     return {
         access,
         refresh,
+        accessExpired,
+        refreshExpired,
         rotate,
     }
 

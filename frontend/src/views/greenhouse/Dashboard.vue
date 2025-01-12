@@ -49,7 +49,7 @@
 
 <script setup>
 import UserNav from '@/components/UserNav.vue';
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, onBeforeMount } from 'vue';
 
 
 const GreenhouseNavCard = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/GreenhouseNavCard.vue'))
@@ -127,6 +127,14 @@ const logs = [
         message: 'Soil moisture low warning',
     },
 ]
+
+
+// get greenhouse id
+const route = useRoute()
+const id = route.params.id
+
+// nav back without id
+onBeforeMount(() => { if (!id) router.push('/greenhouses') })
 
 </script>
 

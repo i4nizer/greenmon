@@ -42,9 +42,9 @@
 <script setup>
 import router from '@/router';
 import { useTokenStore } from '@/store/token';
-import api from '@/utils/api';
 import rules from '@/utils/rules';
 import snackbar from '@/utils/snackbar';
+import axios from 'axios';
 import { ref } from 'vue';
 
 
@@ -69,7 +69,7 @@ const postSignIn = async () => {
         password: password.value
     }
 
-    await api.post('/user/sign-in', data)
+    await axios.post('http://localhost:4000/user/sign-in', data)
         .then((res) => {
             // authenticate
             router.push('/greenhouses')
@@ -81,7 +81,6 @@ const postSignIn = async () => {
         })
         .catch((err) => {
             // display specific error
-            console.log(err)
             if (!err.response) snackbar.message.value = 'Backend server is offline.'
             else if (err.response.status == 401) snackbar.message.value = 'Email is not yet verified.'
             else if (err.response.status == 403) snackbar.message.value = 'Incorrect password.'
