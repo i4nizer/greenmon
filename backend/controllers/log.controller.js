@@ -2,6 +2,7 @@ const logModel = require('../models/logs.model')
 
 
 
+/** Get all logs by greenhouseId */
 const getLog = async (req, res) => { 
     const { greenhouseId } = req.params
 

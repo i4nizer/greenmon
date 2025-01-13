@@ -1,22 +1,18 @@
 const mongoose = require('mongoose');
 
 
-const dataSchema = new mongoose.Schema(
+const numericalSchema = new mongoose.Schema(
     {
         type: {
-            type: String,   // e.g., 'Temperature', 'Humidity', 'Soil Moisture', 'Image'
+            type: String,   // e.g., 'Temperature', 'Humidity', 'Soil Moisture'
             required: true,
         },
         unit: {
-            type: String,   // e.g., '°C', '%', 'lux', 'jpeg'
+            type: String,   // e.g., '°C', '%', 'lux'
             required: true
         },
         value: {
             type: Number,   // number, null
-            default: null,
-        },
-        url: {
-            type: String,   // image path, null
             default: null,
         },
         sensor: {
@@ -35,4 +31,4 @@ const dataSchema = new mongoose.Schema(
 );
 
 
-module.exports = mongoose.model('Data', dataSchema);
+module.exports = mongoose.model('Numerical', numericalSchema);

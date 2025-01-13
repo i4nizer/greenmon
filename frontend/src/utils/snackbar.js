@@ -1,14 +1,15 @@
-import { ref, watch } from "vue";
-
-/// Handle state and message for the snackbar
-
+import { ref } from "vue";
 
 
 const show = ref(false)
 const message = ref('')
 
-watch(message, (nv, ov) => console.log(nv))
+/** Sets a message and shows the snackbar */
+const pop = (msg = '') => {
+    message.value = msg
+    show.value = true
+    console.log(msg)
+}
 
 
-
-export default { message, show }
+export default { message, show, pop }

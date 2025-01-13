@@ -1,14 +1,10 @@
 <template>
     <v-dialog max-width="500">
         <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-                v-bind="activatorProps"
-                color="white"
-                text="Add Threshold"
-                variant="flat"
-                prepend-icon="mdi-plus"
-                class="text-none"
-            ></v-btn>
+            <v-btn v-bind="activatorProps" title="Add Threshold" icon>
+                <v-icon>mdi-tune</v-icon>
+                <v-tooltip activator="parent">Click to add threshold</v-tooltip>
+            </v-btn>
         </template>
 
         <template v-slot:default="{ isActive }">

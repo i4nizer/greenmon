@@ -4,7 +4,8 @@ const router = express.Router()
 
 const { getGreenhouse, postGreenhouse, patchGreenhouse, deleteGreenhouse } = require('../controllers/greenhouse.controller')
 
-const logRoutes = require('./logs.route')
+const mcuRoutes = require('./mcu.route')
+const logRoutes = require('./log.route')
 
 router.route('/')
     .get(getGreenhouse)
@@ -14,6 +15,7 @@ router.route('/')
 
 router.get('/:greenhouseId', getGreenhouse)
 
+router.use('/:greenhouseId/mcu', mcuRoutes)
 router.use('/:greenhouseId/log', logRoutes)
 
     

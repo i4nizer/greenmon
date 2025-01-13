@@ -1,16 +1,27 @@
 <template>
     <v-expansion-panel>
-        <v-expansion-panel-title>{{ mcu?.name ?? 'MCU' }}</v-expansion-panel-title>
+        <v-expansion-panel-title class="d-flex ga-1">
+            <v-text-field
+                :loading="updating"
+                class="mr-10"
+                :variant="titleVariant"
+                density="compact"
+                hide-details
+                ref="title-input"
+                v-model="title"
+                :rules="[rules.required, rules.min3]"
+                @blur="editMcu"
+                @focus="titleVariant = 'outlined'"
+            ></v-text-field>
+            <AddSensorDialog />
+            <AddActuatorDialog />
+            <AddThresholdDialog />
+            <v-divider class="mx-2" vertical></v-divider>
+            <v-btn @click="titleInput.focus()" icon><v-icon>mdi-pencil-outline</v-icon></v-btn>
+            <v-btn :loading="loading" class="mr-2" @click="deleteMcu" icon><v-icon>mdi-delete-outline</v-icon></v-btn>
+        </v-expansion-panel-title>
         <v-expansion-panel-text>
             <v-container fluid>
-
-                <v-row>
-                    <v-col class="d-flex justify-end ga-2">
-                        <AddSensorDialog />
-                        <AddActuatorDialog />
-                        <AddThresholdDialog />
-                    </v-col>
-                </v-row>
 
                 <v-row>
                     <v-col cols="6" sm="12" md="6">
@@ -31,9 +42,10 @@
 
 
 <script setup>
-import { defineAsyncComponent } from 'vue';
-
-//
+import api from '@/utils/api';
+import rules from '@/utils/rules';
+import snackbar from '@/utils/snackbar';
+import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
 
 
 const AddSensorDialog = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/devices/AddSensorDialog.vue'))
@@ -43,6 +55,54 @@ const SensorsCard = defineAsyncComponent(() => import('@/components/greenhouses/
 const ActuatorsCard = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/devices/ActuatorsCard.vue'))
 const ThresholdCard = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/devices/ThresholdCard.vue'))
 
+
+// emits
+const emit = defineEmits(['edit', 'delete'])
+
+// props
+const props = defineProps(['id', 'name'])
+
+// data
+const title = ref(props?.name ?? 'MCU')
+const titleInput = useTemplateRef('title-input')
+const titleVariant = ref('plain')
+
+// state
+const loading = ref(false)
+const updating = ref(false)
+
+
+// edit mcu
+const editMcu = async () => {
+    titleVariant.value = 'plain'
+
+    // invalid
+    if (title.value.length < 3) return title.value = props.name
+
+    // no changes
+    if (title.value == props.name) return;
+    updating.value = true
+
+    const data = { id: props.id, name: title.value }
+    await api.patch(`/user/greenhouse/${props.id}/mcu`, data)
+        .then(res => emit('edit', props.id, title.value))
+        .then(res => snackbar.pop('Microcontroller details updated successfully.'))
+        .catch(err => snackbar.pop(err.toString()))
+
+    updating.value = false
+}
+
+// delete mcu
+const deleteMcu = async () => {
+    loading.value = true
+
+    await api.delete(`/user/greenhouse/${props.id}/mcu`, { data: { id: props.id } })
+        .then(res => emit('delete', props.id))
+        .then(res => snackbar.pop('Microcontroller deleted successfully.'))
+        .catch(err => snackbar.pop(err.toString()))
+
+    loading.value = false
+}
 
 
 // sensors from API
@@ -82,7 +142,6 @@ const thresholds = [
     },
 ]
 
-const props = defineProps(['mcu'])
 </script>
 
 <style scoped>

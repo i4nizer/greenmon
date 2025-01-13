@@ -54,7 +54,14 @@ api.interceptors.request.use(
 
 // Respond to token errors on requests
 api.interceptors.response.use(
-    (res) => res,
+    async (res) => {
+
+        const tokenStore = useTokenStore()
+
+        if (tokenStore.accessExpired) await tokenStore.rotate()
+
+        return res
+    },
     
     // log errors
     async (error) => {

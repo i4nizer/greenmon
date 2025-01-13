@@ -7,10 +7,10 @@ const getGreenhouse = async (req, res) => {
     const { id } = req.accessToken
     const { greenhouseId } = req.params
     
-    const greenhouseDocs = greenhouseId ? (await greenhouseModel.findOne({ _id: greenhouseId, user: id, deleted: false })) || []
+    const greenhouseDocs = greenhouseId ? await greenhouseModel.findOne({ _id: greenhouseId, user: id, deleted: false })
         : await greenhouseModel.find({ user: id, deleted: false })
     
-    res.send({ text: '', object: Array.isArray(greenhouseDocs) ? greenhouseDocs : [greenhouseDocs] })
+    res.send({ text: '', object: greenhouseDocs })
 }
 
 /** Create new greenhouse for the user */
@@ -27,7 +27,7 @@ const postGreenhouse = async (req, res) => {
 /** Updates greenhouse details of the user */
 const patchGreenhouse = async (req, res) => {
     const { id } = req.accessToken
-    const { id: gid, name = '', location = '' } = req.body
+    const { id: gid = null, name = '', location = '' } = req.body
 
     if (!gid) return res.status(400).send({ text: 'Greenhouse id required.' })
     
@@ -38,7 +38,7 @@ const patchGreenhouse = async (req, res) => {
     greenhouseDoc.location = location
     greenhouseDoc.save()
 
-    return res.send({ text: 'Greenhouse details updated successfully.' })
+    res.send({ text: 'Greenhouse details updated successfully.' })
 }
 
 /** Soft deletes the greenhouse */
@@ -46,7 +46,7 @@ const deleteGreenhouse = async (req, res) => {
     const { id } = req.accessToken
     const { id: gid } = req.body
 
-    const greenhouseDoc = await greenhouseModel.findOneAndUpdate({ _id: gid, user: id, deleted: false }, { deleted: true }, { new: true })
+    const greenhouseDoc = await greenhouseModel.findOneAndUpdate({ _id: gid, user: id, deleted: false }, { deleted: true })
     if (!greenhouseDoc) return res.status(404).send({ text: 'Greenhouse not found.' })
     
     res.send({ text: 'Greenhouse deleted successfully.' })

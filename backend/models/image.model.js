@@ -1,19 +1,16 @@
 const mongoose = require('mongoose')
 
 
-const thresholdSchema = new mongoose.Schema(
+const imageSchema = new mongoose.Schema(
     {
-        min: {
-            type: Number,
-            required: true
-        },
-        max: {
-            type: Number,
+        path: {
+            type: String,
             required: true
         },
         sensor: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Sensor',
+            required: true
         },
         deleted: {
             type: Boolean,
@@ -26,4 +23,4 @@ const thresholdSchema = new mongoose.Schema(
 )
 
 
-module.exports = mongoose.model('Threshold', thresholdSchema)
+module.exports = mongoose.model('Image', imageSchema)

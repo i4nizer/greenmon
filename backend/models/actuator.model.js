@@ -7,12 +7,14 @@ const actuatorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        mcus: [       // Multiple MCUs can have access of this
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Mcu'
-            }
-        ],
+        input: {
+            type: String,
+            enum: ['Binary', 'Number']
+        },
+        mcu: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Mcu'
+        },
         deleted: {
             type: Boolean,
             default: false

@@ -7,7 +7,7 @@ const sensorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        datatype: {     // decides which model to use to store data
+        output: {     // decides which model to use to store data
             type: String,
             enum: ['Number', 'Image'],
             default: 'Number'

@@ -9,7 +9,11 @@
         
         <v-row class="px-5 px-sm-10">
             <v-col>
-                <GreenhouseNavCard class="bg-transparent border" />
+                <GreenhouseNavCard 
+                    :id="greenhouse._id"
+                    :name="greenhouse.name"
+                    class="bg-transparent border" 
+                />
             </v-col>
         </v-row>
         
@@ -134,7 +138,14 @@ const route = useRoute()
 const id = route.params.id
 
 // nav back without id
-onBeforeMount(() => { if (!id) router.push('/greenhouses') })
+onBeforeMount(async () => {
+    if (!id) router.push('/greenhouses')
+
+    // load greenhouse
+    await api.get(`/user/greenhouse/${id}`)
+        .then(res => greenhouse.value = res.data.object)
+        .catch(err => snackbar.pop(err.toString()))
+})
 
 </script>
 

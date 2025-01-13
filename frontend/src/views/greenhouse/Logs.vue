@@ -61,29 +61,15 @@ onBeforeMount(async () => {
     if (!id) router.push('/greenhouses')
 
     // load greenhouse
+    // load greenhouse
     await api.get(`/user/greenhouse/${id}`)
-        .then(res => {
-            // no greenhouse found with that id
-            if (res.data.object.length == 0) {
-                snackbar.message.value = 'Invalid greenhouse id.'
-                snackbar.show.value = true
-                return router.push('/greenhouses')
-            }
-
-            greenhouse.value = res.data.object[0]
-        })
-        .catch(err => {
-            snackbar.message.value = err.toString()
-            snackbar.show.value = true
-        })
+        .then(res => greenhouse.value = res.data.object)
+        .catch(err => snackbar.pop(err.toString()))
 
     // load logs
     await api.get(`/user/greenhouse/${id}/log`)
         .then(res => logs.value = res.data.object)
-        .catch(err => {
-            snackbar.message.value = err.toString()
-            snackbar.show.value = true
-        })
+        .catch(err => snackbar.pop(err.toString()))
 })
 
 </script>

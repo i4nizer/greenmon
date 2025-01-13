@@ -1,14 +1,10 @@
 <template>
     <v-dialog max-width="500">
         <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-                v-bind="activatorProps"
-                color="white"
-                text="Add Sensor"
-                variant="flat"
-                prepend-icon="mdi-plus"
-                class="text-none"
-            ></v-btn>
+            <v-btn v-bind="activatorProps" title="Add Sensor" icon>
+                <v-icon>mdi-chip</v-icon>
+                <v-tooltip activator="parent">Click to add sensor</v-tooltip>
+            </v-btn>
         </template>
 
         <template v-slot:default="{ isActive }">
@@ -22,6 +18,15 @@
                     density="compact"
                     class="mt-6"
                 ></v-text-field>
+
+                <v-select
+                    label="Output"
+                    variant="outlined"
+                    density="compact"
+                    clearable
+                    chips
+                    :items="['Number', 'Image']"
+                ></v-select>
 
                 <v-btn 
                     class="text-none" 
