@@ -43,6 +43,8 @@
                 <span class="text-grey">{{ l.createdAt }}</span>
             </div>
 
+            <span v-if="logs.length == 0" class="text-grey text-center font-weight-black my-10">No Logs Yet</span>
+
         </v-card-text>
     </v-card>
 </template>

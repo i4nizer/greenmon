@@ -1,7 +1,7 @@
 <template>
     <v-card class="pa-3">
         <v-card-title>Log Summary</v-card-title>
-        <v-card-subtitle>There are {{ logCounts.total }} logs today.</v-card-subtitle>
+        <v-card-subtitle>There are {{ logCounts.total }} logs.</v-card-subtitle>
         <v-card-text class="d-flex flex-wrap ga-3">
             <div class="border rounded pa-5 flex-grow-1">
                 <span class="text-h5 text-red font-weight-black">{{ logCounts.error }}</span>

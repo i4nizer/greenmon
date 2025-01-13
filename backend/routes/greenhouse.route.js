@@ -4,14 +4,17 @@ const router = express.Router()
 
 const { getGreenhouse, postGreenhouse, patchGreenhouse, deleteGreenhouse } = require('../controllers/greenhouse.controller')
 
+const logRoutes = require('./logs.route')
+
 router.route('/')
     .get(getGreenhouse)
     .post(postGreenhouse)
     .patch(patchGreenhouse)
     .delete(deleteGreenhouse)
 
-router.get('/:id?', getGreenhouse)
+router.get('/:greenhouseId', getGreenhouse)
 
+router.use('/:greenhouseId/log', logRoutes)
 
     
 module.exports = router

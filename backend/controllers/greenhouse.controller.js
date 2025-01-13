@@ -5,9 +5,9 @@ const greenhouseModel = require('../models/greenhouse.model')
 /** Get all greenhouse of user by id */
 const getGreenhouse = async (req, res) => {
     const { id } = req.accessToken
-    const { id: gid } = req.params
+    const { greenhouseId } = req.params
     
-    const greenhouseDocs = gid ? (await greenhouseModel.findOne({ _id: gid, user: id, deleted: false })) || []
+    const greenhouseDocs = greenhouseId ? (await greenhouseModel.findOne({ _id: greenhouseId, user: id, deleted: false })) || []
         : await greenhouseModel.find({ user: id, deleted: false })
     
     res.send({ text: '', object: Array.isArray(greenhouseDocs) ? greenhouseDocs : [greenhouseDocs] })

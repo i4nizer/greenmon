@@ -20,6 +20,10 @@ const logsSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        greenhouse: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Greenhouse'
+        },
         deleted: {
             type: Boolean,
             default: false
