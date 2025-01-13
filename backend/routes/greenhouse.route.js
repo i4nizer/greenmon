@@ -10,6 +10,8 @@ router.route('/')
     .patch(patchGreenhouse)
     .delete(deleteGreenhouse)
 
+router.get('/:id?', getGreenhouse)
+
 
     
 module.exports = router

@@ -5,10 +5,12 @@ const greenhouseModel = require('../models/greenhouse.model')
 /** Get all greenhouse of user by id */
 const getGreenhouse = async (req, res) => {
     const { id } = req.accessToken
+    const { id: gid } = req.params
     
-    const greenhouseDocs = await greenhouseModel.find({ user: id, deleted: false })
+    const greenhouseDocs = gid ? (await greenhouseModel.findOne({ _id: gid, user: id, deleted: false })) || []
+        : await greenhouseModel.find({ user: id, deleted: false })
     
-    res.send({ text: '', object: greenhouseDocs })
+    res.send({ text: '', object: Array.isArray(greenhouseDocs) ? greenhouseDocs : [greenhouseDocs] })
 }
 
 /** Create new greenhouse for the user */
