@@ -1,6 +1,7 @@
 <template>
     <v-expansion-panel>
         <v-expansion-panel-title class="d-flex ga-1">
+            
             <v-text-field
                 :loading="updating"
                 class="mr-10"
@@ -13,23 +14,40 @@
                 @blur="editMcu"
                 @focus="titleVariant = 'outlined'"
             ></v-text-field>
-            <AddSensorDialog />
+            
+            <AddSensorDialog :mcu-id="props.id" @add="onAddSensor" />
             <AddActuatorDialog />
             <AddThresholdDialog />
+            
             <v-divider class="mx-2" vertical></v-divider>
-            <v-btn @click="titleInput.focus()" icon><v-icon>mdi-pencil-outline</v-icon></v-btn>
-            <v-btn :loading="loading" class="mr-2" @click="deleteMcu" icon><v-icon>mdi-delete-outline</v-icon></v-btn>
+            
+            <v-btn @click="titleInput.focus()" icon>
+                <v-icon>mdi-pencil-outline</v-icon>
+                <v-tooltip activator="parent">Click to edit microcontroller</v-tooltip>
+            </v-btn>
+            <v-btn :loading="loading" class="mr-2" @click="deleteMcu" icon>
+                <v-icon>mdi-delete-outline</v-icon>
+                <v-tooltip activator="parent">Click to delete microcontroller</v-tooltip>
+            </v-btn>
+
         </v-expansion-panel-title>
         <v-expansion-panel-text>
             <v-container fluid>
 
                 <v-row>
                     <v-col cols="6" sm="12" md="6">
-                        <SensorsCard class="bg-transparent border" :sensors="sensors" />
+                        <SensorsCard 
+                            class="bg-transparent border" 
+                            :sensors="sensors" 
+                            @edit="onEditSensor"
+                            @delete="onDeleteSensor"
+                        />
                     </v-col>
+
                     <v-col cols="6" sm="12" md="6">
                         <ActuatorsCard class="bg-transparent border" :actuators="actuators" />
                     </v-col>
+                    
                     <v-col cols="12">
                         <ThresholdCard class="bg-transparent border" :thresholds="thresholds" />
                     </v-col>
@@ -45,7 +63,8 @@
 import api from '@/utils/api';
 import rules from '@/utils/rules';
 import snackbar from '@/utils/snackbar';
-import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
+import { provide } from 'vue';
+import { defineAsyncComponent, inject, onBeforeMount, ref, useTemplateRef } from 'vue';
 
 
 const AddSensorDialog = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/devices/AddSensorDialog.vue'))
@@ -62,14 +81,24 @@ const emit = defineEmits(['edit', 'delete'])
 // props
 const props = defineProps(['id', 'name'])
 
+// state
+const loading = ref(false)
+const updating = ref(false)
+
 // data
 const title = ref(props?.name ?? 'MCU')
 const titleInput = useTemplateRef('title-input')
 const titleVariant = ref('plain')
 
-// state
-const loading = ref(false)
-const updating = ref(false)
+const greenhouseId = inject('greenhouseId')
+
+const sensors = ref([])
+const actuators = ref([])
+const thresholds = ref([])
+
+// pass mcuId
+provide('mcuId', props.id)
+
 
 
 // edit mcu
@@ -104,43 +133,37 @@ const deleteMcu = async () => {
     loading.value = false
 }
 
+// add sensor
+const onAddSensor = (sensor) => sensors.value.push(sensor)
 
-// sensors from API
-const sensors = [
-    {
-        name: 'DHT11',
-        status: 'Online'
-    },
-    {
-        name: 'Soil Moisture Sensor',
-        status: 'Offline'
-    },
-]
+// edit sensor
+const onEditSensor = (id, name, output) => {
+    const sensor = sensors.value.find(s => s._id == id)
+    sensor.name = name
+    sensor.output = output
+}
 
-// actuators from API
-const actuators = [
-    {
-        name: 'Water Pump',
-        status: 'Off'
-    },
-    {
-        name: 'Fan',
-        status: 'On'
-    },
-]
+// delete sensor
+const onDeleteSensor = (id) => sensors.value = sensors.value.filter(s => s._id != id)
 
-// thresholds from API
-const thresholds = [
-    {
-        type: 'Temperature',
-        unit: 'C',
-        value: 35,
-        condition: '>',
-        action: true,
-        sensor: 'DHT11',
-        actuator: 'Fan'
-    },
-]
+
+// load data
+onBeforeMount(async () => {
+
+    // load sensors
+    await api.get(`/user/greenhouse/${greenhouseId}/mcu/${props.id}/sensor`)
+        .then(res => sensors.value = res.data.object)
+        .catch(err => snackbar.pop(err.toString()))
+
+    // load actuators
+    await api.get(`/user/greenhouse/${greenhouseId}/mcu/${props.id}/actuator`)
+        .then(res => actuators.value = res.data.object)
+        .catch(err => snackbar.pop(err.toString()))
+
+
+
+})
+
 
 </script>
 

@@ -53,7 +53,8 @@
 
 <script setup>
 import UserNav from '@/components/UserNav.vue';
-import { defineAsyncComponent, onBeforeMount } from 'vue';
+import { defineAsyncComponent, onBeforeMount, provide } from 'vue';
+import { useRoute } from 'vue-router';
 
 
 const GreenhouseNavCard = defineAsyncComponent(() => import('@/components/greenhouses/greenhouse/GreenhouseNavCard.vue'))
@@ -133,16 +134,17 @@ const logs = [
 ]
 
 
-// get greenhouse id
+// get and pass greenhouseId
 const route = useRoute()
-const id = route.params.id
+const greenhouseId = route.params.greenhouseId
+provide('greenhouseId', greenhouseId)
 
 // nav back without id
 onBeforeMount(async () => {
-    if (!id) router.push('/greenhouses')
+    if (!greenhouseId) router.push('/greenhouses')
 
     // load greenhouse
-    await api.get(`/user/greenhouse/${id}`)
+    await api.get(`/user/greenhouse/${greenhouseId}`)
         .then(res => greenhouse.value = res.data.object)
         .catch(err => snackbar.pop(err.toString()))
 })

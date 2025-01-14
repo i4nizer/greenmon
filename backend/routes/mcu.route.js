@@ -5,6 +5,7 @@ const router = express.Router({ mergeParams: true })
 const { getMcu, postMcu, patchMcu, deleteMcu } = require('../controllers/mcu.controller')
 
 const sensorRoutes = require('./sensor.route')
+const actuatorRoutes = require('./actuator.route')
 
 router.route('/')
     .get(getMcu)
@@ -13,6 +14,7 @@ router.route('/')
     .delete(deleteMcu)
 
 router.use('/:mcuId/sensor', sensorRoutes)
+router.use('/:mcuId/actuator', actuatorRoutes)
 
 
 

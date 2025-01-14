@@ -37,7 +37,7 @@ import UserNav from '@/components/UserNav.vue';
 import router from '@/router';
 import api from '@/utils/api';
 import snackbar from '@/utils/snackbar';
-import { defineAsyncComponent, onBeforeMount, ref } from 'vue';
+import { defineAsyncComponent, onBeforeMount, provide, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 
@@ -47,9 +47,10 @@ const LogListCard = defineAsyncComponent(() => import('@/components/greenhouses/
 
 
 
-// get greenhouse id
+// get and pass greenhouseId
 const route = useRoute()
-const id = route.params.id
+const greenhouseId = route.params.greenhouseId
+provide('greenhouseId', greenhouseId)
 
 // data
 const greenhouse = ref({})
@@ -58,16 +59,16 @@ const logs = ref([])
 
 // nav back without id
 onBeforeMount(async () => {
-    if (!id) router.push('/greenhouses')
+    if (!greenhouseId) router.push('/greenhouses')
 
     // load greenhouse
     // load greenhouse
-    await api.get(`/user/greenhouse/${id}`)
+    await api.get(`/user/greenhouse/${greenhouseId}`)
         .then(res => greenhouse.value = res.data.object)
         .catch(err => snackbar.pop(err.toString()))
 
     // load logs
-    await api.get(`/user/greenhouse/${id}/log`)
+    await api.get(`/user/greenhouse/${greenhouseId}/log`)
         .then(res => logs.value = res.data.object)
         .catch(err => snackbar.pop(err.toString()))
 })
